@@ -1,3 +1,4 @@
+import numpy as np
 from keras import regularizers
 from keras.layers import Dense, Dropout
 from keras.models import Sequential
@@ -9,13 +10,19 @@ def build_model(m):
               metrics=['accuracy'], )
 
 
-def fit_model(m, kx_train, ky_train, kx_test, ky_test):
+def fit_model(m, kx_train, ky_train, kx_test, ky_test, epochs=1000):
     m.fit(kx_train,
           ky_train,
           batch_size=64,
-          epochs=1000,
+          epochs=epochs,
           verbose=1,
           validation_data=(kx_test, ky_test))
+
+
+def inference_model(m, input_list):
+    probabilities = m.predict(input_list)
+    k_star = np.argmax(np.sum(np.log(probabilities), axis=0))
+    return k_star
 
 
 # Dropout
