@@ -17,7 +17,6 @@ def generate_features(audio_entities, max_count):
     count = 0
     features = []
     while count < max_count:
-        print(count)
         audio_entity = choice(audio_entities)
         voice_only_signal = audio_entity['audio_voice_only']
         cuts = np.random.uniform(low=1, high=len(voice_only_signal), size=2)
@@ -27,6 +26,10 @@ def generate_features(audio_entities, max_count):
             features.append(features_per_conv)
         count += 1
     return features
+
+
+def normalize(list_matrices, mean, std):
+    return [(m - mean) / std for m in list_matrices]
 
 
 def generate_data(max_count_per_class=500):
@@ -53,8 +56,15 @@ def generate_data(max_count_per_class=500):
 
         print('processing {} speaker'.format(speaker_id))
         train = generate_features(audio_entities_train, max_count_per_class)
+        print('processed {} for train/'.format(max_count_per_class))
         test = generate_features(audio_entities_test, max_count_per_class)
+        print('processed {} for test/'.format(max_count_per_class))
 
+        mean_train = np.mean([np.mean(t) for t in train])
+        std_train = np.mean([np.std(t) for t in train])
+
+        train = normalize(train, mean_train, std_train)
+        test = normalize(test, mean_train, std_train)
         inputs = {'train': train,
                   'test': test,
                   'speaker_id': speaker_id}

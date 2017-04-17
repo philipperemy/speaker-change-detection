@@ -38,8 +38,7 @@ def data_to_keras(data):
 
 
 def run_model():
-    # TODO: normalise the data. max = 40, min = -40
-    data = generate_data(max_count_per_class=10)
+    data = generate_data(max_count_per_class=500)
     kx_train, ky_train, kx_test, ky_test = data_to_keras(data)
     m = get_model()
     build_model(m)
