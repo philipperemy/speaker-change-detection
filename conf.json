@@ -1,0 +1,37 @@
+{
+  "GENERAL": {
+    "PROJECT_DIR": "/tmp/"
+  },
+  "AUDIO": {
+    "VCTK_CORPUS_PATH": "/Volumes/Transcend/VCTK-Corpus/",
+    "SAMPLE_RATE": 8000,
+    "NUM_SENTENCES_PER_CONVERSATION": 5,
+    "SPEAKER_IDS": [],
+    "MAX_NUMBER_OF_SPEAKERS_PER_CONVERSATION": 3,
+    "COMMENTS": "If you want all the speakers, set SPEAKER_IDS to the empty list: []",
+    "NUM_OF_MFCC": 26,
+    "MFCC_WINDOW_SIZE": 49,
+    "FEATURES_WINDOW_LENGTH_SECONDS": 0.5,
+    "FEATURES_WINDOW_STEP_SECONDS": 0.5,
+    "FEATURES_TO_USE": "MFCC",
+    "TOT_NUM_THREADS_TO_FEED_DATA_TO_THE_QUEUES": 2
+  },
+  "DEEP_LEARNING": {
+    "MODEL": {
+      "RNN_SIZE": 512,
+      "CNN_CONVOLUTIONS": 3,
+      "CNN_BLOCKS": 2,
+      "CNN_INITIAL_FEATURES": 16,
+      "EMBEDDING_OUTPUT_SIZE": 16,
+      "SIAMESE_LAG": 1
+    },
+    "TRAINING": {
+      "SAVE_BEST_FROM_STEP": 25000,
+      "DO_TRAINING": 1,
+      "LEARNING_RATE": 3e-4,
+      "DO_TEST_SET_EVERY_STEP": 1,
+      "BATCH_SIZE": 2,
+      "COMMENTS": "Batch size must be equal to 2 when using Siamese Networks."
+    }
+  }
+}
