@@ -14,12 +14,13 @@ def build_model(m):
 
 
 def fit_model(m, kx_train, ky_train, kx_test, ky_test, max_epochs=1000):
-    checkpoint = ModelCheckpoint(filepath='checkpoints/model_{epoch:02d}_{val_acc:.3f}.h5', save_best_only=True)
+    checkpoint = ModelCheckpoint(monitor='val_acc', filepath='checkpoints/model_{epoch:02d}_{val_acc:.3f}.h5',
+                                 save_best_only=True)
     # if the accuracy does not increase by 1.0% over 10 epochs, we stop the training.
-    early_stopping = EarlyStopping(monitor='val_acc', min_delta=1.0, patience=10, verbose=0, mode='max')
+    early_stopping = EarlyStopping(monitor='val_acc', min_delta=0.01, patience=100, verbose=1, mode='max')
     m.fit(kx_train,
           ky_train,
-          batch_size=1,
+          batch_size=1024,
           epochs=max_epochs,
           verbose=1,
           validation_data=(kx_test, ky_test),
@@ -63,8 +64,8 @@ def get_model_bak2():
 
 
 # loss: 0.0460 - acc: 0.9921 - val_loss: 0.4071 - val_acc: 0.8713
-def get_model():
+def get_model(num_classes):
     m = Sequential()
     m.add(Dense(200, batch_input_shape=[None, 39 * 10], activation='sigmoid'))
-    m.add(Dense(4, activation='softmax'))
+    m.add(Dense(num_classes, activation='softmax'))
     return m

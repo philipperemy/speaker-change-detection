@@ -1,4 +1,5 @@
 import os
+import pickle
 import sys
 
 sys.path.append(os.path.abspath('..'))
@@ -35,13 +36,31 @@ def data_to_keras(data):
 
 
 def run_model():
+    num_speakers = 109
     data = generate_data(max_count_per_class=500)  # 10)  # 500)
     kx_train, ky_train, kx_test, ky_test, categorical_speakers = data_to_keras(data)
-    m = get_model()
+    m = get_model(num_classes=num_speakers)
     build_model(m)
     fit_model(m, kx_train, ky_train, kx_test, ky_test, max_epochs=50)
     print(categorical_speakers.get_speaker_from_index(inference_model(m, kx_train[0:100])))
 
 
+def run_model_persist():
+    num_speakers = 109
+    data_filename = '/tmp/speaker-change-detection-data.pkl'
+    if not os.path.exists(data_filename):
+        print('Data does not exist. Generating it now.')
+        data = generate_data(max_count_per_class=1000)
+        pickle.dump(data, open(data_filename, 'wb'))
+    else:
+        print('Data found.')
+        data = pickle.load(open(data_filename, 'rb'))
+    kx_train, ky_train, kx_test, ky_test, categorical_speakers = data_to_keras(data)
+    m = get_model(num_classes=num_speakers)
+    build_model(m)
+    fit_model(m, kx_train, ky_train, kx_test, ky_test, max_epochs=1000)
+    # print(categorical_speakers.get_speaker_from_index(inference_model(m, kx_train[0:100])))
+
+
 if __name__ == '__main__':
-    run_model()
+    run_model_persist()

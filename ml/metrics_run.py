@@ -57,20 +57,21 @@ def process_conv(conv, t, sr, model):
 def find_optimal_threshold():
     # all_t = [0.5, 1.0, 2.0]
     # t = all_t[0]
+    num_speakers = 109
     checkpoints = natsorted(glob('checkpoints/*.h5'))
     if len(checkpoints) == 0:
         print('No checkpoints found.')
-        data_folder = 'data.pkl'
-        if not os.path.exists(data_folder):
+        data_filename = '/tmp/speaker-change-detection-data.pkl'
+        if not os.path.exists(data_filename):
             print('Data does not exist. Generating it now.')
             data = generate_data(max_count_per_class=1000)
-            pickle.dump(data, open(data_folder, 'wb'))
+            pickle.dump(data, open(data_filename, 'wb'))
         else:
             print('Data found.')
-            data = pickle.load(open(data_folder, 'rb'))
+            data = pickle.load(open(data_filename, 'rb'))
 
         kx_train, ky_train, kx_test, ky_test, categorical_speakers = data_to_keras(data)
-        m = get_model()
+        m = get_model(num_classes=num_speakers)
         build_model(m)
         fit_model(m, kx_train, ky_train, kx_test, ky_test, max_epochs=200)
         print(categorical_speakers.get_speaker_from_index(inference_model(m, kx_train[0:100])))
