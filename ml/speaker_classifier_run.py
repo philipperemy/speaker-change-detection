@@ -4,7 +4,7 @@ import sys
 sys.path.append(os.path.abspath('..'))
 
 from helpers.speakers_to_categorical import SpeakersToCategorical
-from ml.data_generation import generate_data
+from ml.mfcc_data_generation import generate_data
 from ml.speaker_classifier import *
 
 

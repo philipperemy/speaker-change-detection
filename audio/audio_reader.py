@@ -7,11 +7,12 @@ from time import time
 import dill
 import librosa
 import numpy as np
+
 from helpers.logger import Logger
 
 logger = Logger.instance()
 
-TMP_DIR = '/tmp/speakerRECO_cache/'
+TMP_DIR = '/tmp/speaker-change-detection/'
 if not os.path.exists(TMP_DIR):
     os.makedirs(TMP_DIR)
 
