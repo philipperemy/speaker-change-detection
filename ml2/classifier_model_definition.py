@@ -1,7 +1,6 @@
 import numpy as np
-from keras import regularizers
 from keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
-from keras.layers import Dense, Dropout
+from keras.layers import Dense
 from keras.models import Sequential
 
 from ml.mfcc_data_generation import normalize
@@ -47,27 +46,7 @@ def predict(m, input_list, log=False):
     return probabilities
 
 
-# Dropout
-# 4 speakers 500 per class - loss: 0.3613 - acc: 0.8646 - val_loss: 0.3992 - val_acc: 0.8493
-def get_model_bak():
-    m = Sequential()
-    m.add(Dense(200, batch_input_shape=[None, 39 * 10], activation='sigmoid'))
-    m.add(Dropout(0.5))
-    m.add(Dense(4, activation='softmax'))
-    return m
-
-
-# kernel_regularizer=regularizers.l2(0.01)
-# loss: 0.3954 - acc: 0.9077 - val_loss: 0.5580 - val_acc: 0.8394
-def get_model_bak2():
-    m = Sequential()
-    m.add(Dense(200, batch_input_shape=[None, 39 * 10], activation='sigmoid',
-                kernel_regularizer=regularizers.l2(0.01)))
-    m.add(Dense(4, activation='softmax'))
-    return m
-
-
-# loss: 0.0460 - acc: 0.9921 - val_loss: 0.4071 - val_acc: 0.8713
+# No need to have regularization. The dataset is really big and the model really small.
 def get_model(num_classes):
     m = Sequential()
     m.add(Dense(200, batch_input_shape=[None, 39 * 10], activation='sigmoid'))

@@ -2,11 +2,12 @@ import os
 import pickle
 import sys
 
+import numpy as np
+
 sys.path.append(os.path.abspath('..'))
 
 from helpers.speakers_to_categorical import SpeakersToCategorical
-from ml.mfcc_data_generation import generate_data
-from ml.speaker_classifier import *
+from ml2.classifier_model_definition import get_model, fit_model, build_model
 
 
 def data_to_keras(data):
@@ -35,22 +36,16 @@ def data_to_keras(data):
     return kx_train, ky_train, kx_test, ky_test, categorical_speakers
 
 
-def run_model_persist():
+def start_training():
     num_speakers = 109
     data_filename = '/tmp/speaker-change-detection-data.pkl'
-    if not os.path.exists(data_filename):
-        print('Data does not exist. Generating it now.')
-        data = generate_data(max_count_per_class=1000)
-        pickle.dump(data, open(data_filename, 'wb'))
-    else:
-        print('Data found.')
-        data = pickle.load(open(data_filename, 'rb'))
+    assert os.path.exists(data_filename), 'Data does not exist.'
+    data = pickle.load(open(data_filename, 'rb'))
     kx_train, ky_train, kx_test, ky_test, categorical_speakers = data_to_keras(data)
     m = get_model(num_classes=num_speakers)
     build_model(m)
     fit_model(m, kx_train, ky_train, kx_test, ky_test, max_epochs=1000)
-    # print(categorical_speakers.get_speaker_from_index(inference_model(m, kx_train[0:100])))
 
 
 if __name__ == '__main__':
-    run_model_persist()
+    start_training()
