@@ -4,6 +4,8 @@ from keras.callbacks import ModelCheckpoint, EarlyStopping
 from keras.layers import Dense, Dropout
 from keras.models import Sequential
 
+from ml.mfcc_data_generation import normalize
+
 
 def build_model(m):
     m.compile(loss='categorical_crossentropy',
@@ -25,9 +27,19 @@ def fit_model(m, kx_train, ky_train, kx_test, ky_test, max_epochs=1000):
 
 
 def inference_model(m, input_list):
-    probabilities = m.predict(input_list)
-    k_star = np.argmax(np.sum(np.log(probabilities), axis=0))
+    log_probabilities = predict(m, input_list, log=True)
+    k_star = np.argmax(np.sum(log_probabilities, axis=0))
     return k_star
+
+
+def predict(m, input_list, log=False):
+    mean = np.mean([np.mean(t) for t in input_list])
+    std = np.mean([np.std(t) for t in input_list])
+    input_list = normalize(input_list, mean, std)
+    probabilities = m.predict(input_list)
+    if log:
+        probabilities = np.log(probabilities)
+    return probabilities
 
 
 # Dropout

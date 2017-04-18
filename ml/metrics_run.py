@@ -1,6 +1,11 @@
+import os
+import pickle
+import sys
 from glob import glob
 
 from natsort import natsorted
+
+sys.path.append(os.path.abspath('..'))
 
 from ml.conv_data_generation import generate_conv
 from ml.mfcc_data_generation import *
@@ -33,7 +38,7 @@ def process_conv(conv, t, sr, model):
         audio_slice_is_transition = is_transition(i, j, mix)
         is_transition_list.append(audio_slice_is_transition)
         mfcc_features.append(feat)
-        log_likelihoods.append(model.predict(feat))
+        log_likelihoods.append(predict(model, feat, log=True))
 
     print(np.array([inference_model(model, v) for v in mfcc_features]))
     print(np.where(np.array(is_transition_list, dtype=int))[0])
@@ -52,16 +57,25 @@ def process_conv(conv, t, sr, model):
 def find_optimal_threshold():
     # all_t = [0.5, 1.0, 2.0]
     # t = all_t[0]
-
     checkpoints = natsorted(glob('checkpoints/*.h5'))
     if len(checkpoints) == 0:
-        data = generate_data(max_count_per_class=10)
+        print('No checkpoints found.')
+        data_folder = 'data.pkl'
+        if not os.path.exists(data_folder):
+            print('Data does not exist. Generating it now.')
+            data = generate_data(max_count_per_class=1000)
+            pickle.dump(data, open(data_folder, 'wb'))
+        else:
+            print('Data found.')
+            data = pickle.load(open(data_folder, 'rb'))
+
         kx_train, ky_train, kx_test, ky_test, categorical_speakers = data_to_keras(data)
         m = get_model()
         build_model(m)
         fit_model(m, kx_train, ky_train, kx_test, ky_test, max_epochs=200)
         print(categorical_speakers.get_speaker_from_index(inference_model(m, kx_train[0:100])))
     else:
+        print('Checkpoints found.')
         from keras.models import load_model
         m = load_model(checkpoints[-1])
     train, test, sr = generate_conv()
