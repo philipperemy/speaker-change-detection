@@ -7,6 +7,7 @@ from time import time
 import dill
 import librosa
 import numpy as np
+import progressbar
 
 from helpers.logger import Logger
 
@@ -196,7 +197,10 @@ class AudioReader(object):
             'Using the generated files at {}. Using them to load the cache. Be sure to have enough memory.'.format(
                 TMP_DIR))
         self.metadata = dill.load(open(os.path.join(TMP_DIR, 'metadata.pkl'), 'rb'))
-        for pkl_file in find_files(TMP_DIR, pattern='*.pkl'):
+
+        bar = progressbar.ProgressBar()
+        pickle_files = find_files(TMP_DIR, pattern='*.pkl')
+        for pkl_file in bar(pickle_files):
             if 'metadata' not in pkl_file:
                 with open(pkl_file, 'rb') as f:
                     obj = dill.load(f)

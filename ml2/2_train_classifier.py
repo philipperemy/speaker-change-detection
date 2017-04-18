@@ -42,6 +42,7 @@ def start_training():
     assert os.path.exists(data_filename), 'Data does not exist.'
     data = pickle.load(open(data_filename, 'rb'))
     kx_train, ky_train, kx_test, ky_test, categorical_speakers = data_to_keras(data)
+    pickle.dump(categorical_speakers, open('/tmp/speaker-change-detection-categorical_speakers.pkl', 'wb'))
     m = get_model(num_classes=num_speakers)
     build_model(m)
     fit_model(m, kx_train, ky_train, kx_test, ky_test, max_epochs=1000)

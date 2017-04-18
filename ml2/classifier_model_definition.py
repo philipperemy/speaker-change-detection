@@ -39,10 +39,10 @@ def inference_model(m, input_list):
 def predict(m, input_list, log=False):
     mean = np.mean([np.mean(t) for t in input_list])
     std = np.mean([np.std(t) for t in input_list])
-    input_list = normalize(input_list, mean, std)
+    input_list = np.array(normalize(input_list, mean, std))
     probabilities = m.predict(input_list)
     if log:
-        probabilities = np.log(probabilities)
+        probabilities = np.log(probabilities + 0.000001) # for stability.
     return probabilities
 
 
@@ -51,4 +51,5 @@ def get_model(num_classes):
     m = Sequential()
     m.add(Dense(200, batch_input_shape=[None, 39 * 10], activation='sigmoid'))
     m.add(Dense(num_classes, activation='softmax'))
+    print(m.summary())
     return m

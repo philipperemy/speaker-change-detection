@@ -1,4 +1,5 @@
 import os
+import pickle
 import sys
 from glob import glob
 
@@ -31,17 +32,17 @@ def is_transition(slice_offset_min, slice_offset_max, mix):
 
 def process_conv(conv, t, sr, model):
     mix, audio = conv  # no-overlap when slicing with t!
-    mfcc_features, log_likelihoods, is_transition_list = [], [], []
+    log_likelihoods, is_transition_list = [], []
     indices = list(range(0, len(audio), int(t * sr)))
     for i, j in zip(indices, indices[1:]):
         audio_slice = audio[i:j]
         feat = get_mfcc_features_390(audio_slice, sr, max_frames=None)
         audio_slice_is_transition = is_transition(i, j, mix)
         is_transition_list.append(audio_slice_is_transition)
-        mfcc_features.append(feat)
         log_likelihoods.append(predict(model, feat, log=True))
+        predicted_speaker_id = inference_model(model, feat)
+        print('speaker predicted = {}, '.format(predicted_speaker_id))
 
-    print(np.array([inference_model(model, v) for v in mfcc_features]))
     print(np.where(np.array(is_transition_list, dtype=int))[0])
     distances = [0.0]
     for i, (d1, d2) in enumerate(zip(log_likelihoods, log_likelihoods[1:])):
@@ -56,8 +57,8 @@ def process_conv(conv, t, sr, model):
 
 
 def find_optimal_threshold():
-    # all_t = [0.5, 1.0, 2.0]
-    # t = all_t[0]
+    # is the model correctly saved?
+    categorical_speakers = pickle.load(open('/tmp/speaker-change-detection-categorical_speakers.pkl', 'rb'))
     checkpoints = natsorted(glob('checkpoints/*.h5'))
     assert len(checkpoints) != 0, 'No checkpoints found.'
     m = load_model(checkpoints[-1])
