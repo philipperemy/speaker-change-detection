@@ -39,7 +39,7 @@ def run_model():
     kx_train, ky_train, kx_test, ky_test, categorical_speakers = data_to_keras(data)
     m = get_model()
     build_model(m)
-    fit_model(m, kx_train, ky_train, kx_test, ky_test, epochs=50)
+    fit_model(m, kx_train, ky_train, kx_test, ky_test, max_epochs=50)
     print(categorical_speakers.get_speaker_from_index(inference_model(m, kx_train[0:100])))
 
 

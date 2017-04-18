@@ -1,3 +1,7 @@
+from glob import glob
+
+from natsort import natsorted
+
 from ml.conv_data_generation import generate_conv
 from ml.mfcc_data_generation import *
 from ml.speaker_classifier_run import *
@@ -31,33 +35,37 @@ def process_conv(conv, t, sr, model):
         mfcc_features.append(feat)
         log_likelihoods.append(model.predict(feat))
 
+    print(np.array([inference_model(model, v) for v in mfcc_features]))
     print(np.where(np.array(is_transition_list, dtype=int))[0])
     distances = [0.0]
     for i, (d1, d2) in enumerate(zip(log_likelihoods, log_likelihoods[1:])):
         d = dist(d1, d2)
         print('i = {}, transition = {}, dist = {}'.format(i, is_transition_list[i], d))
         distances.append(d)
-    import matplotlib.pyplot as plt
-    plt.plot(distances)
-    plt.show()
-    # model_output has shape (num_slices, M, K)
-    a = 2
-    # while next_index < len(audio):
-    pass
+        # import matplotlib.pyplot as plt
+        # plt.plot(distances)
+        # plt.show()
+        # # model_output has shape (num_slices, M, K)
+        # while next_index < len(audio):
 
 
 def find_optimal_threshold():
-    all_t = [0.5, 1.0, 2.0]
-    t = all_t[0]
+    # all_t = [0.5, 1.0, 2.0]
+    # t = all_t[0]
 
-    data = generate_data(max_count_per_class=10)  # 10)  # 500)
-    kx_train, ky_train, kx_test, ky_test, categorical_speakers = data_to_keras(data)
-    m = get_model()
-    build_model(m)
-    fit_model(m, kx_train, ky_train, kx_test, ky_test, epochs=50)
-    print(categorical_speakers.get_speaker_from_index(inference_model(m, kx_train[0:100])))
-
+    checkpoints = natsorted(glob('checkpoints/*.h5'))
+    if len(checkpoints) == 0:
+        data = generate_data(max_count_per_class=10)
+        kx_train, ky_train, kx_test, ky_test, categorical_speakers = data_to_keras(data)
+        m = get_model()
+        build_model(m)
+        fit_model(m, kx_train, ky_train, kx_test, ky_test, max_epochs=200)
+        print(categorical_speakers.get_speaker_from_index(inference_model(m, kx_train[0:100])))
+    else:
+        from keras.models import load_model
+        m = load_model(checkpoints[-1])
     train, test, sr = generate_conv()
+    t = 0.5  # seconds
     process_conv(train, t, sr, m)
     process_conv(test, t, sr, m)
 

@@ -1,5 +1,6 @@
 import numpy as np
 from keras import regularizers
+from keras.callbacks import ModelCheckpoint, EarlyStopping
 from keras.layers import Dense, Dropout
 from keras.models import Sequential
 
@@ -10,13 +11,17 @@ def build_model(m):
               metrics=['accuracy'], )
 
 
-def fit_model(m, kx_train, ky_train, kx_test, ky_test, epochs=1000):
+def fit_model(m, kx_train, ky_train, kx_test, ky_test, max_epochs=1000):
+    checkpoint = ModelCheckpoint(filepath='checkpoints/model_{epoch:02d}_{val_acc:.3f}.h5', save_best_only=True)
+    # if the accuracy does not increase by 1.0% over 10 epochs, we stop the training.
+    early_stopping = EarlyStopping(monitor='val_acc', min_delta=1.0, patience=10, verbose=0, mode='max')
     m.fit(kx_train,
           ky_train,
-          batch_size=64,
-          epochs=epochs,
+          batch_size=1,
+          epochs=max_epochs,
           verbose=1,
-          validation_data=(kx_test, ky_test))
+          validation_data=(kx_test, ky_test),
+          callbacks=[checkpoint, early_stopping])
 
 
 def inference_model(m, input_list):
