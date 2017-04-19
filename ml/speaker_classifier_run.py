@@ -7,6 +7,7 @@ sys.path.append(os.path.abspath('..'))
 from helpers.speakers_to_categorical import SpeakersToCategorical
 from ml.mfcc_data_generation import generate_data
 from ml.speaker_classifier import *
+from constants import c
 
 
 def data_to_keras(data):
@@ -36,7 +37,7 @@ def data_to_keras(data):
 
 
 def run_model_persist():
-    num_speakers = 109
+    num_speakers = c.AUDIO.NUM_SPEAKERS
     data_filename = '/tmp/speaker-change-detection-data.pkl'
     if not os.path.exists(data_filename):
         print('Data does not exist. Generating it now.')

@@ -1,7 +1,8 @@
 {
   "AUDIO": {
-    "VCTK_CORPUS_PATH_2": "/home/philippe/VCTK-Corpus/",
     "VCTK_CORPUS_PATH": "/Volumes/Transcend/VCTK-Corpus/",
-    "SAMPLE_RATE": 8000
+    "SAMPLE_RATE": 8000,
+    "NUM_SPEAKERS": 4,
+    "VCTK_CORPUS_PATH_2": "/home/philippe/VCTK-Corpus/"
   }
 }

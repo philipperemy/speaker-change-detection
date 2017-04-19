@@ -1,5 +1,4 @@
 import os
-import pickle
 import sys
 from glob import glob
 
@@ -57,7 +56,7 @@ def process_conv(conv, t, sr, model):
 def find_optimal_threshold():
     # all_t = [0.5, 1.0, 2.0]
     # t = all_t[0]
-    num_speakers = 109
+    num_speakers = c.AUDIO.NUM_SPEAKERS
     checkpoints = natsorted(glob('checkpoints/*.h5'))
     if len(checkpoints) == 0:
         print('No checkpoints found.')

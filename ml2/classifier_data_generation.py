@@ -1,12 +1,10 @@
 import os
 import sys
 
-sys.path.append(os.path.abspath('..'))
-from constants import c
-
 import numpy as np
 
 sys.path.append(os.path.abspath('..'))
+from constants import c
 
 from audio.audio_reader import AudioReader, extract_speaker_id
 from audio.speech_features import get_mfcc_features_390

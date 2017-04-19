@@ -75,7 +75,7 @@ def find_optimal_threshold():
     assert len(checkpoints) != 0, 'No checkpoints found.'
     m = load_model(checkpoints[-1])
     train, test, sr = generate_conv_voice_only()
-    t = 0.5  # seconds
+    t = 2  # seconds
     process_conv(train, t, sr, m, norm_data, categorical_speakers)
     process_conv(test, t, sr, m, norm_data, categorical_speakers)
 

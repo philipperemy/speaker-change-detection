@@ -8,6 +8,7 @@ sys.path.append(os.path.abspath('..'))
 
 from helpers.speakers_to_categorical import SpeakersToCategorical
 from ml2.classifier_model_definition import get_model, fit_model, build_model
+from constants import c
 
 
 def data_to_keras(data):
@@ -37,7 +38,7 @@ def data_to_keras(data):
 
 
 def start_training():
-    num_speakers = 109
+    num_speakers = c.AUDIO.NUM_SPEAKERS
     data_filename = '/tmp/speaker-change-detection-data.pkl'
     assert os.path.exists(data_filename), 'Data does not exist.'
     data = pickle.load(open(data_filename, 'rb'))
@@ -45,7 +46,7 @@ def start_training():
     pickle.dump(categorical_speakers, open('/tmp/speaker-change-detection-categorical_speakers.pkl', 'wb'))
     m = get_model(num_classes=num_speakers)
     build_model(m)
-    fit_model(m, kx_train, ky_train, kx_test, ky_test, max_epochs=1000)
+    fit_model(m, kx_train, ky_train, kx_test, ky_test)
 
 
 if __name__ == '__main__':
