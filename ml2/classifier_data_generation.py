@@ -45,26 +45,28 @@ def generate_data(max_count_per_class=500):
         per_speaker_dict[speaker_id].append(audio_entity)
 
     for speaker_id, audio_entities in per_speaker_dict.items():
-        print('speaker id = {}'.format(speaker_id))
+        print('Processing speaker id = {}'.format(speaker_id))
         cutoff = int(len(audio_entities) * 0.8)
         audio_entities_train = audio_entities[0:cutoff]
         audio_entities_test = audio_entities[cutoff:]
 
-        print('processing {} speaker'.format(speaker_id))
         train = generate_features(audio_entities_train, max_count_per_class)
-        print('processed {} for train/'.format(max_count_per_class))
+        print('Processed {} for train/'.format(max_count_per_class))
         test = generate_features(audio_entities_test, max_count_per_class)
-        print('processed {} for test/'.format(max_count_per_class))
+        print('Processed {} for test/'.format(max_count_per_class))
 
         mean_train = np.mean([np.mean(t) for t in train])
         std_train = np.mean([np.std(t) for t in train])
 
         train = normalize(train, mean_train, std_train)
         test = normalize(test, mean_train, std_train)
-        inputs = {'train': train,
-                  'test': test,
-                  'speaker_id': speaker_id}
-        output[speaker_id] = inputs
+
+        if speaker_id in c.AUDIO.SPEAKER_FOR_CLASSIFICATION_TASK:
+            inputs = {'train': train,
+                      'test': test,
+                      'speaker_id': speaker_id}
+            output[speaker_id] = inputs
+        # still we want to normalize all the speakers.
         normalization_constants[speaker_id] = {'mean_train': mean_train,
                                                'std_train': std_train}
     return output, normalization_constants

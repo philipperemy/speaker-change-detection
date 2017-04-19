@@ -6,18 +6,18 @@ sys.path.append(os.path.abspath('..'))
 from audio.audio_reader import AudioReader
 from constants import c
 
-speakers_sub_list = None
 audio = AudioReader(audio_dir=c.AUDIO.VCTK_CORPUS_PATH,
                     sample_rate=c.AUDIO.SAMPLE_RATE,
-                    speakers_sub_list=speakers_sub_list)
+                    speakers_sub_list=None)
 
 
 def generate_conv(generate_mix_fun=audio.generate_mix):
     # 14 seconds. sentence is about 2 sec. so 7 sentences per speaker
-    all_speakers = audio.get_speaker_list()
-    cut = len(all_speakers) // 2
-    training_speakers = all_speakers[0:cut]
-    testing_speakers = all_speakers[cut:]
+    all_speaker_transition_task = c.AUDIO.SPEAKER_FOR_TRANSITION_TASK
+    # all_speaker_transition_task = audio.get_speaker_list()
+    cut = len(all_speaker_transition_task) // 2
+    training_speakers = all_speaker_transition_task[0:cut]
+    testing_speakers = all_speaker_transition_task[cut:]
 
     training_targets = []
     for training_speaker in training_speakers:

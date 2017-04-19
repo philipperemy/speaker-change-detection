@@ -38,7 +38,7 @@ def data_to_keras(data):
 
 
 def start_training():
-    num_speakers = c.AUDIO.NUM_SPEAKERS
+    num_speakers = c.AUDIO.NUM_SPEAKERS_CLASSIFICATION_TASK
     data_filename = '/tmp/speaker-change-detection-data.pkl'
     assert os.path.exists(data_filename), 'Data does not exist.'
     data = pickle.load(open(data_filename, 'rb'))
