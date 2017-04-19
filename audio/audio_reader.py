@@ -244,6 +244,21 @@ class AudioReader(object):
                             FILENAME: self.metadata[speaker_id][sentence_id]['filename']})
         return targets
 
+    def generate_mix_with_voice_only(self, targets):
+        audio_dict = {}
+        for i, target in enumerate(targets):
+            audio_dict[i] = self.cache[target[FILENAME]]
+        output = audio_dict[0]['audio_voice_only']
+        targets[0]['offset'] = 0  # in ms
+        for i in range(1, len(targets)):
+            offset_pos = -1
+            beg = targets[i - 1]['offset']
+            while offset_pos <= beg:
+                offset_pos = len(output)
+                output = np.concatenate((output, audio_dict[i]['audio_voice_only']))
+                targets[i]['offset'] = offset_pos
+        return targets, output
+
     def generate_mix(self, targets):
         audio_dict = {}
         for i, target in enumerate(targets):

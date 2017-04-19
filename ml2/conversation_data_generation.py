@@ -12,7 +12,7 @@ audio = AudioReader(audio_dir=c.AUDIO.VCTK_CORPUS_PATH,
                     speakers_sub_list=speakers_sub_list)
 
 
-def generate_conv():
+def generate_conv(generate_mix_fun=audio.generate_mix):
     # 14 seconds. sentence is about 2 sec. so 7 sentences per speaker
     all_speakers = audio.get_speaker_list()
     cut = len(all_speakers) // 2
@@ -23,14 +23,19 @@ def generate_conv():
     for training_speaker in training_speakers:
         t = audio.define_random_mix(num_sentences=6, speaker_ids_to_choose_from=[training_speaker])
         training_targets.append(t)
-    tr = audio.generate_mix(sum(training_targets, []))
+    tr = generate_mix_fun(sum(training_targets, []))
 
     testing_targets = []
     for testing_speaker in testing_speakers:
         t = audio.define_random_mix(num_sentences=6, speaker_ids_to_choose_from=[testing_speaker])
         testing_targets.append(t)
-    te = audio.generate_mix(sum(testing_targets, []))
+    te = generate_mix_fun(sum(testing_targets, []))
     return tr, te, c.AUDIO.SAMPLE_RATE
+
+
+def generate_conv_voice_only():
+    return generate_conv(generate_mix_fun=audio.generate_mix_with_voice_only)
+
 
 if __name__ == '__main__':
     generate_conv()

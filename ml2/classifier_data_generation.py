@@ -35,6 +35,7 @@ def generate_data(max_count_per_class=500):
     # os.system('rm -rf /tmp/speaker-change-detection/')
     # os.system('mkdir /tmp/speaker-change-detection/')
     output = dict()
+    normalization_constants = dict()
     audio = AudioReader(audio_dir=c.AUDIO.VCTK_CORPUS_PATH,
                         sample_rate=c.AUDIO.SAMPLE_RATE,
                         speakers_sub_list=None)
@@ -68,7 +69,9 @@ def generate_data(max_count_per_class=500):
                   'test': test,
                   'speaker_id': speaker_id}
         output[speaker_id] = inputs
-    return output
+        normalization_constants[speaker_id] = {'mean_train': mean_train,
+                                               'std_train': std_train}
+    return output, normalization_constants
 
 
 if __name__ == '__main__':

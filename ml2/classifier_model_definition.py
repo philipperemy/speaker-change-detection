@@ -3,8 +3,6 @@ from keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
 from keras.layers import Dense
 from keras.models import Sequential
 
-from ml.mfcc_data_generation import normalize
-
 
 def build_model(m):
     m.compile(loss='categorical_crossentropy',
@@ -36,13 +34,10 @@ def inference_model(m, input_list):
     return k_star
 
 
-def predict(m, input_list, log=False):
-    mean = np.mean([np.mean(t) for t in input_list])
-    std = np.mean([np.std(t) for t in input_list])
-    input_list = np.array(normalize(input_list, mean, std))
-    probabilities = m.predict(input_list)
+def predict(m, norm_inputs, log=False):
+    probabilities = m.predict(np.array(norm_inputs))
     if log:
-        probabilities = np.log(probabilities + 0.000001) # for stability.
+        probabilities = np.log(probabilities + 0.000001)  # for stability.
     return probabilities
 
 
