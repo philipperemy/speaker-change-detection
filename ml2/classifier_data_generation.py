@@ -32,8 +32,6 @@ def normalize(list_matrices, mean, std):
 
 
 def generate_data(max_count_per_class=500):
-    # os.system('rm -rf /tmp/speaker-change-detection/')
-    # os.system('mkdir /tmp/speaker-change-detection/')
     output = dict()
     normalization_constants = dict()
     audio = AudioReader(audio_dir=c.AUDIO.VCTK_CORPUS_PATH,
