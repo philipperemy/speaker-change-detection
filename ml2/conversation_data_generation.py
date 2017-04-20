@@ -21,13 +21,13 @@ def generate_conv(generate_mix_fun=audio.generate_mix):
 
     training_targets = []
     for training_speaker in training_speakers:
-        t = audio.define_random_mix(num_sentences=200, speaker_ids_to_choose_from=[training_speaker])
+        t = audio.define_random_mix(num_sentences=20, speaker_ids_to_choose_from=[training_speaker])
         training_targets.append(t)
     tr = generate_mix_fun(sum(training_targets, []))
 
     testing_targets = []
     for testing_speaker in testing_speakers:
-        t = audio.define_random_mix(num_sentences=200, speaker_ids_to_choose_from=[testing_speaker])
+        t = audio.define_random_mix(num_sentences=20, speaker_ids_to_choose_from=[testing_speaker])
         testing_targets.append(t)
     te = generate_mix_fun(sum(testing_targets, []))
     return tr, te, c.AUDIO.SAMPLE_RATE

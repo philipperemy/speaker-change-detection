@@ -54,9 +54,7 @@ def process_conv(conv, t, sr, model):
 
 
 def find_optimal_threshold():
-    # all_t = [0.5, 1.0, 2.0]
-    # t = all_t[0]
-    num_speakers = c.AUDIO.NUM_SPEAKERS
+    num_speakers = c.AUDIO.NUM_SPEAKERS_CLASSIFICATION_TASK
     checkpoints = natsorted(glob('checkpoints/*.h5'))
     if len(checkpoints) == 0:
         print('No checkpoints found.')
@@ -79,6 +77,7 @@ def find_optimal_threshold():
         from keras.models import load_model
         m = load_model(checkpoints[-1])
     train, test, sr = generate_conv()
+    # all values of t = [0.5, 1.0, 2.0]
     t = 0.5  # seconds
     process_conv(train, t, sr, m)
     process_conv(test, t, sr, m)

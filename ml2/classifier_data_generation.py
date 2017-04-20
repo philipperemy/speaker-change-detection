@@ -66,6 +66,9 @@ def generate_data(max_count_per_class=500):
                       'test': test,
                       'speaker_id': speaker_id}
             output[speaker_id] = inputs
+            print('Adding speaker to the classification dataset: {}'.format(speaker_id))
+        else:
+            print('Discarding speaker for the classification dataset: {}'.format(speaker_id))
         # still we want to normalize all the speakers.
         normalization_constants[speaker_id] = {'mean_train': mean_train,
                                                'std_train': std_train}

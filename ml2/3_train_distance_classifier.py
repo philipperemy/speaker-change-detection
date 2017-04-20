@@ -60,9 +60,16 @@ def process_conv(conv, t, sr, model, norm_data, categorical_speakers):
         print('i = {}, transition = {}, dist = {}'.format(i, is_transition_list[i], d))
         distances.append(d)
     distances = np.array(distances)
+    from time import time
+    import matplotlib
+    matplotlib.use('Agg')
     import matplotlib.pyplot as plt
+    fig = plt.figure()
     plt.plot(distances)
-    plt.show()
+    plt.savefig('/tmp/distance_{}.png'.format(str(time())))
+    plt.close(fig)
+    # plt.close()
+    # plt.show()
     # # model_output has shape (num_slices, M, K)
     # while next_index < len(audio):
 
@@ -73,7 +80,9 @@ def find_optimal_threshold():
     norm_data = pickle.load(open('/tmp/speaker-change-detection-norm.pkl', 'rb'))
     checkpoints = natsorted(glob('checkpoints/*.h5'))
     assert len(checkpoints) != 0, 'No checkpoints found.'
-    m = load_model(checkpoints[-1])
+    checkpoint_file = checkpoints[-1]
+    print('Loading [{}]'.format(checkpoint_file))
+    m = load_model(checkpoint_file)
     train, test, sr = generate_conv_voice_only()
     t = 2  # seconds
     process_conv(train, t, sr, m, norm_data, categorical_speakers)

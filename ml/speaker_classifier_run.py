@@ -37,7 +37,7 @@ def data_to_keras(data):
 
 
 def run_model_persist():
-    num_speakers = c.AUDIO.NUM_SPEAKERS
+    num_speakers = c.AUDIO.NUM_SPEAKERS_CLASSIFICATION_TASK
     data_filename = '/tmp/speaker-change-detection-data.pkl'
     if not os.path.exists(data_filename):
         print('Data does not exist. Generating it now.')
