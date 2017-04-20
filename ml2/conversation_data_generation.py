@@ -1,6 +1,8 @@
 import os
 import sys
 
+import numpy as np
+
 sys.path.append(os.path.abspath('..'))
 
 from audio.audio_reader import AudioReader
@@ -20,13 +22,13 @@ def generate_conv(generate_mix_fun=audio.generate_mix):
     testing_speakers = all_speaker_transition_task[cut:]
 
     training_targets = []
-    for training_speaker in training_speakers:
+    for training_speaker in np.random.choice(training_speakers, size=2, replace=False):
         t = audio.define_random_mix(num_sentences=20, speaker_ids_to_choose_from=[training_speaker])
         training_targets.append(t)
     tr = generate_mix_fun(sum(training_targets, []))
 
     testing_targets = []
-    for testing_speaker in testing_speakers:
+    for testing_speaker in np.random.choice(testing_speakers, size=2, replace=False):
         t = audio.define_random_mix(num_sentences=20, speaker_ids_to_choose_from=[testing_speaker])
         testing_targets.append(t)
     te = generate_mix_fun(sum(testing_targets, []))

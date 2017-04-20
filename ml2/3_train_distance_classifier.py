@@ -25,33 +25,38 @@ def get_true_speaker(slice_offset_max, mix):
     return mix[target_id]['speaker_id']
 
 
-def is_transition(slice_offset_min, slice_offset_max, mix):
-    if slice_offset_min == 0:  # first voice is not a transition.
-        return False
-    last_speaker = None
-    for mix_element in mix:
-        if slice_offset_min <= mix_element['offset'] <= slice_offset_max:  # there is a change in the slice.
-            return mix_element['speaker_id'] != last_speaker  # is this a transition?
-        last_speaker = mix_element['speaker_id']
-    return False
+# def is_transition(slice_offset_min, slice_offset_max, mix):
+#     if slice_offset_min == 0:  # first voice is not a transition.
+#         return False
+#     last_speaker = None
+#     for mix_element in mix:
+#         if slice_offset_min <= mix_element['offset'] <= slice_offset_max:  # there is a change in the slice.
+#             return mix_element['speaker_id'] != last_speaker  # is this a transition?
+#         last_speaker = mix_element['speaker_id']
+#     return False
 
 
 def process_conv(conv, t, sr, model, norm_data, categorical_speakers):
     mix, audio = conv  # no-overlap when slicing with t!
     likelihoods, is_transition_list = [], []
     indices = list(range(0, len(audio), int(t * sr)))
+    prev_speaker = None
     for i, j in zip(indices, indices[1:]):
         audio_slice = audio[i:j]
         actual_speaker = get_true_speaker(j, mix)
         feat = get_mfcc_features_390(audio_slice, sr, max_frames=None)
         feat = normalize(feat, norm_data[actual_speaker]['mean_train'], norm_data[actual_speaker]['std_train'])
-        audio_slice_is_transition = is_transition(i, j, mix)
+        if prev_speaker is None:
+            audio_slice_is_transition = False
+        else:
+            audio_slice_is_transition = (prev_speaker != actual_speaker)
         is_transition_list.append(audio_slice_is_transition)
         # works better with log=False. Because values are ver close to 0.0, so log diverges.
         likelihoods.append(predict(model, feat, log=False))
         predicted_speaker_id = inference_model(model, feat)
         predicted_speaker = categorical_speakers.get_speaker_from_index(predicted_speaker_id)
         print('speaker predicted = {}, actual speaker = {}'.format(predicted_speaker, actual_speaker))
+        prev_speaker = actual_speaker
 
     print(np.where(np.array(is_transition_list, dtype=int))[0])
     distances = [0.0]
@@ -66,8 +71,15 @@ def process_conv(conv, t, sr, model, norm_data, categorical_speakers):
     import matplotlib.pyplot as plt
     fig = plt.figure()
     plt.plot(distances)
-    plt.savefig('/tmp/distance_{}.png'.format(str(time())))
+    plt.plot(np.array(is_transition_list))
+    plt_filename = '/tmp/distance_{}.png'.format(str(int(time())))
+    plt.savefig(plt_filename)
     plt.close(fig)
+
+    ground_truth_transition = np.array(is_transition_list).argmax()
+    predicted_transition = np.array(distances).argmax()
+    return ground_truth_transition == predicted_transition
+
     # plt.close()
     # plt.show()
     # # model_output has shape (num_slices, M, K)
@@ -83,10 +95,16 @@ def find_optimal_threshold():
     checkpoint_file = checkpoints[-1]
     print('Loading [{}]'.format(checkpoint_file))
     m = load_model(checkpoint_file)
-    train, test, sr = generate_conv_voice_only()
-    t = 2  # seconds
-    process_conv(train, t, sr, m, norm_data, categorical_speakers)
-    process_conv(test, t, sr, m, norm_data, categorical_speakers)
+
+    accuracy_list = []
+    while True:
+        train, test, sr = generate_conv_voice_only()
+        t = 2  # seconds
+        acc1 = process_conv(train, t, sr, m, norm_data, categorical_speakers)
+        acc2 = process_conv(test, t, sr, m, norm_data, categorical_speakers)
+        accuracy_list.append(acc1)
+        accuracy_list.append(acc2)
+        print('accuracy = {}'.format(np.mean(accuracy_list)))
 
 
 if __name__ == '__main__':
