@@ -245,6 +245,8 @@ class AudioReader(object):
         return targets
 
     def generate_mix_with_voice_only(self, targets):
+        if len(targets) == 0:
+            return [], None
         audio_dict = {}
         for i, target in enumerate(targets):
             audio_dict[i] = self.cache[target[FILENAME]]
