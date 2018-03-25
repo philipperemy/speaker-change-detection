@@ -3,9 +3,9 @@ import pickle
 
 import numpy as np
 
-from ..constants import c
-from ..helpers.speakers_to_categorical import SpeakersToCategorical
-from ..ml.classifier_model_definition import get_model, fit_model, build_model
+from constants import c
+from helpers.speakers_to_categorical import SpeakersToCategorical
+from ml.classifier_model_definition import get_model, fit_model, build_model
 
 
 def data_to_keras(data):

@@ -1,7 +1,7 @@
 import numpy as np
 
-from ..constants import c
-from ..audio.audio_reader import AudioReader
+from constants import c
+from audio.audio_reader import AudioReader
 
 audio = AudioReader(audio_dir=c.AUDIO.VCTK_CORPUS_PATH,
                     sample_rate=c.AUDIO.SAMPLE_RATE,

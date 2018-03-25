@@ -1,7 +1,7 @@
 
 
-from ..audio.audio_reader import AudioReader
-from ..constants import c
+from audio.audio_reader import AudioReader
+from constants import c
 
 
 def main():

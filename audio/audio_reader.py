@@ -9,7 +9,7 @@ import librosa
 import numpy as np
 import progressbar
 
-from ..helpers.logger import Logger
+from helpers.logger import Logger
 
 logger = Logger.instance()
 
@@ -132,21 +132,22 @@ class AudioReader(object):
                  audio_dir,
                  sample_rate,
                  speakers_sub_list=None):
-        logger.debug('Initializing AudioReader()')
-        logger.debug('audio_dir = {}'.format(audio_dir))
-        logger.debug('sample_rate = {}'.format(sample_rate))
-        logger.debug('speakers_sub_list = {}'.format(speakers_sub_list))
         self.audio_dir = os.path.expanduser(audio_dir)  # for the ~/
         self.sample_rate = sample_rate
         self.metadata = dict()  # small cache <SPEAKER_ID -> SENTENCE_ID, filename>
         self.cache = dict()  # big cache <filename, data:audio librosa, blanks.>
 
+        logger.debug('Initializing AudioReader()')
+        logger.debug('audio_dir = {}'.format(self.audio_dir))
+        logger.debug('sample_rate = {}'.format(sample_rate))
+        logger.debug('speakers_sub_list = {}'.format(speakers_sub_list))
+
         st = time()
         if len(find_files(TMP_DIR, pattern='*.pkl')) == 0:  # generate all the pickle files.
             logger.debug('Nothing found at {}. Generating all the caches now.'.format(TMP_DIR))
-            files = find_files(audio_dir)
+            files = find_files(self.audio_dir)
             assert len(files) != 0, 'Generate your cache please.'
-            logger.debug('Found {} files in total in {}.'.format(len(files), audio_dir))
+            logger.debug('Found {} files in total in {}.'.format(len(files), self.audio_dir))
             if speakers_sub_list is not None:
                 files = list(
                     filter(lambda x: any(word in extract_speaker_id(x) for word in speakers_sub_list), files))

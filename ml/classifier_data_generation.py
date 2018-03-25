@@ -1,8 +1,8 @@
 import numpy as np
 
-from ..audio.audio_reader import AudioReader, extract_speaker_id
-from ..audio.speech_features import get_mfcc_features_390
-from ..constants import c
+from audio.audio_reader import AudioReader, extract_speaker_id
+from audio.speech_features import get_mfcc_features_390
+from constants import c
 
 
 def generate_features(audio_entities, max_count):
