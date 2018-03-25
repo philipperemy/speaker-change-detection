@@ -1,18 +1,14 @@
-import os
 import pickle
-import sys
 from glob import glob
 
 import numpy as np
 from keras.models import load_model
 from natsort import natsorted
-
-sys.path.append(os.path.abspath('..'))
-
-from ml2.conversation_data_generation import generate_conv_voice_only
-from ml2.classifier_data_generation import get_mfcc_features_390, normalize
-from ml2.classifier_model_definition import predict, inference_model
 from sklearn.metrics import f1_score
+
+from ..ml.classifier_data_generation import get_mfcc_features_390, normalize
+from ..ml.classifier_model_definition import predict, inference_model
+from ..ml.conversation_data_generation import generate_conv_voice_only
 
 
 # d of dim MxK (M is the number of frames, K the number of speakers in the first training set).

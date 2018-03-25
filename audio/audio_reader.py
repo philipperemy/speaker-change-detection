@@ -9,7 +9,7 @@ import librosa
 import numpy as np
 import progressbar
 
-from helpers.logger import Logger
+from ..helpers.logger import Logger
 
 logger = Logger.instance()
 
@@ -136,7 +136,7 @@ class AudioReader(object):
         logger.debug('audio_dir = {}'.format(audio_dir))
         logger.debug('sample_rate = {}'.format(sample_rate))
         logger.debug('speakers_sub_list = {}'.format(speakers_sub_list))
-        self.audio_dir = audio_dir
+        self.audio_dir = os.path.expanduser(audio_dir)  # for the ~/
         self.sample_rate = sample_rate
         self.metadata = dict()  # small cache <SPEAKER_ID -> SENTENCE_ID, filename>
         self.cache = dict()  # big cache <filename, data:audio librosa, blanks.>

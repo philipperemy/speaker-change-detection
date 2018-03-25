@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+*.tar.gz
 *.h5
 
 # C extensions

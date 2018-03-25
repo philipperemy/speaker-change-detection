@@ -1,12 +1,7 @@
-import os
-import sys
-
 import numpy as np
 
-sys.path.append(os.path.abspath('..'))
-
-from audio.audio_reader import AudioReader
-from constants import c
+from ..constants import c
+from ..audio.audio_reader import AudioReader
 
 audio = AudioReader(audio_dir=c.AUDIO.VCTK_CORPUS_PATH,
                     sample_rate=c.AUDIO.SAMPLE_RATE,

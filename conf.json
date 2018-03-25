@@ -1,9 +1,8 @@
 {
   "AUDIO": {
-    "VCTK_CORPUS_PATH_2": "/Volumes/Transcend/VCTK-Corpus/",
     "SAMPLE_RATE": 8000,
     "NUM_SPEAKERS_CLASSIFICATION_TASK": 80,
-    "VCTK_CORPUS_PATH": "/home/philippe/VCTK-Corpus/",
+    "VCTK_CORPUS_PATH": "~/VCTK-Corpus/",
     "SPEAKER_FOR_CLASSIFICATION_TASK": [
       "p225",
       "p226",

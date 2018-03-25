@@ -1,10 +1,9 @@
 import os
 import pickle
-import sys
 
-sys.path.append(os.path.abspath('..'))
+from ..ml.classifier_data_generation import generate_data
 
-from ml2.classifier_data_generation import generate_data
+# sys.path.append(os.path.abspath('..'))
 
 if __name__ == '__main__':
     data_filename = '/tmp/speaker-change-detection-data.pkl'
