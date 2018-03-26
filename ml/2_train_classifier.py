@@ -2,6 +2,7 @@ import os
 import pickle
 
 import numpy as np
+from tqdm import tqdm
 
 from constants import c
 from helpers.speakers_to_categorical import SpeakersToCategorical
@@ -12,7 +13,7 @@ def data_to_keras(data):
     categorical_speakers = SpeakersToCategorical(data)
     kx_train, ky_train, kx_test, ky_test = [], [], [], []
     ky_test = []
-    for speaker_id in categorical_speakers.get_speaker_ids():
+    for speaker_id in tqdm(categorical_speakers.get_speaker_ids(), desc='data_to_keras'):
         d = data[speaker_id]
         y = categorical_speakers.get_one_hot_vector(d['speaker_id'])
         for x_train_elt in data[speaker_id]['train']:
@@ -38,6 +39,7 @@ def start_training():
     num_speakers = c.AUDIO.NUM_SPEAKERS_CLASSIFICATION_TASK
     data_filename = '/tmp/speaker-change-detection-data.pkl'
     assert os.path.exists(data_filename), 'Data does not exist.'
+    print('Loading the inputs in memory. It might take a while...')
     data = pickle.load(open(data_filename, 'rb'))
     kx_train, ky_train, kx_test, ky_test, categorical_speakers = data_to_keras(data)
     pickle.dump(categorical_speakers, open('/tmp/speaker-change-detection-categorical_speakers.pkl', 'wb'))
