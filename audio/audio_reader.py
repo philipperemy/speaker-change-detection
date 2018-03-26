@@ -7,7 +7,7 @@ from time import time
 import dill
 import librosa
 import numpy as np
-import progressbar
+from tqdm import tqdm
 
 from helpers.logger import Logger
 
@@ -154,7 +154,9 @@ class AudioReader(object):
                 logger.debug('{} files correspond to the speaker list {}.'.format(len(files), speakers_sub_list))
             assert len(files) != 0
 
-            for filename in files:
+            bar = tqdm(files)
+            for filename in bar:
+                bar.set_description(filename)
                 try:
                     speaker_id = extract_speaker_id(filename)
                     audio, _ = read_audio_from_filename(filename, self.sample_rate)
@@ -199,9 +201,8 @@ class AudioReader(object):
                 TMP_DIR))
         self.metadata = dill.load(open(os.path.join(TMP_DIR, 'metadata.pkl'), 'rb'))
 
-        bar = progressbar.ProgressBar()
         pickle_files = find_files(TMP_DIR, pattern='*.pkl')
-        for pkl_file in bar(pickle_files):
+        for pkl_file in tqdm(pickle_files, desc='reading cache'):
             if 'metadata' not in pkl_file:
                 with open(pkl_file, 'rb') as f:
                     obj = dill.load(f)

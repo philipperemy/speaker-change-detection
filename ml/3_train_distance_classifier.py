@@ -98,7 +98,7 @@ def process_conv_training(conv, t, sr, model, norm_data, categorical_speakers):
         likelihoods.append(predict(model, feat, log=False))
         predicted_speaker_id = inference_model(model, feat)
         predicted_speaker = categorical_speakers.get_speaker_from_index(predicted_speaker_id)
-        # print('speaker predicted = {}, actual speaker = {}'.format(predicted_speaker, actual_speaker))
+        print('speaker predicted = {}, actual speaker = {}'.format(predicted_speaker, actual_speaker))
         prev_speaker = actual_speaker
 
     # print(np.where(np.array(is_transition_list, dtype=int))[0])

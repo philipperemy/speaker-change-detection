@@ -1,14 +1,14 @@
 import numpy as np
+from tqdm import tqdm
 
 from audio.audio_reader import AudioReader, extract_speaker_id
 from audio.speech_features import get_mfcc_features_390
 from constants import c
 
 
-def generate_features(audio_entities, max_count):
-    count = 0
+def generate_features(audio_entities, max_count, desc):
     features = []
-    while count < max_count:
+    for _ in tqdm(range(max_count), desc=desc):
         audio_entity = np.random.choice(audio_entities)
         voice_only_signal = audio_entity['audio_voice_only']
         cuts = np.random.uniform(low=1, high=len(voice_only_signal), size=2)
@@ -16,7 +16,6 @@ def generate_features(audio_entities, max_count):
         features_per_conv = get_mfcc_features_390(signal_to_process, c.AUDIO.SAMPLE_RATE, max_frames=None)
         if len(features_per_conv) > 0:
             features.append(features_per_conv)
-        count += 1
     return features
 
 
@@ -45,9 +44,9 @@ def generate_data(max_count_per_class=500):
         audio_entities_train = audio_entities[0:cutoff]
         audio_entities_test = audio_entities[cutoff:]
 
-        train = generate_features(audio_entities_train, max_count_per_class)
+        train = generate_features(audio_entities_train, max_count_per_class, 'train')
         print('Processed {} for train/'.format(max_count_per_class))
-        test = generate_features(audio_entities_test, max_count_per_class)
+        test = generate_features(audio_entities_test, max_count_per_class, 'test')
         print('Processed {} for test/'.format(max_count_per_class))
 
         mean_train = np.mean([np.mean(t) for t in train])
