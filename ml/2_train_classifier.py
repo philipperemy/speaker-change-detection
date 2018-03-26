@@ -35,6 +35,9 @@ def data_to_keras(data):
 
 
 def start_training():
+    if not os.path.exists('checkpoints'):
+        os.makedirs('checkpoints')
+
     num_speakers = c.AUDIO.NUM_SPEAKERS_CLASSIFICATION_TASK
     data_filename = '/tmp/speaker-change-detection-data.pkl'
     assert os.path.exists(data_filename), 'Data does not exist.'
