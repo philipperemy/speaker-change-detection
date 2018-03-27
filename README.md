@@ -51,3 +51,10 @@ export PYTHONPATH=..:$PYTHONPATH; python 1_generate_inputs.py
 export PYTHONPATH=..:$PYTHONPATH; python 2_train_classifier.py
 export PYTHONPATH=..:$PYTHONPATH; python 3_train_distance_classifier.py
 ```
+
+To regenerate only the VCTK cache, run:
+
+```
+cd audio/
+export PYTHONPATH=..:$PYTHONPATH; python generate_all_cache.py
+```
