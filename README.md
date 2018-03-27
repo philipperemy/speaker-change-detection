@@ -18,6 +18,8 @@ speaker data._
   <img src="misc/img_1.png" width="500">
 </p>
 
+The accuracy is very high and close to 100%, as reported in the paper.
+
 
 ## Get Started
 
