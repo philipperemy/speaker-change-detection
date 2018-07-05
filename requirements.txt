@@ -1,5 +1,6 @@
 dill
 keras
+tensorflow
 librosa
 matplotlib
 namedtupled
