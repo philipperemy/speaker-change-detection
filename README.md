@@ -48,7 +48,7 @@ virtualenv -p python3.6 venv # probably will work on every python3 impl.
 source venv/bin/activate
 pip install -r requirements.txt
 # download the cache and all the files specified above (you can re-generate them yourself if you wish).
-
+cd ml/
 export PYTHONPATH=..:$PYTHONPATH; python 1_generate_inputs.py
 export PYTHONPATH=..:$PYTHONPATH; python 2_train_classifier.py
 export PYTHONPATH=..:$PYTHONPATH; python 3_train_distance_classifier.py
