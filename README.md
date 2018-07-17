@@ -60,3 +60,9 @@ To regenerate only the VCTK cache, run:
 cd audio/
 export PYTHONPATH=..:$PYTHONPATH; python generate_all_cache.py
 ```
+
+## Contributions
+
+Contributions are welcome! Some ways to improve this project:
+
+- Given any audio file, is it possible to test it and detect any speaker change?
