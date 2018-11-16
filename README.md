@@ -64,5 +64,13 @@ export PYTHONPATH=..:$PYTHONPATH; python generate_all_cache.py
 ## Contributions
 
 Contributions are welcome! Some ways to improve this project:
+- Given any audio file, is it possible to test it and detect any speaker change?
+
+## Questions
 
 - Given any audio file, is it possible to test it and detect any speaker change?
+Yes, as long as it follows the same structure as the VCTK Corpus dataset.
+
+- Is there any way to test the trained model to detect speaker changes of our audio files?
+Yeah it's possible but it's going to be a bit difficult. I guess you have to choose a dataset and converts it to VCTK format.
+
