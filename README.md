@@ -41,7 +41,7 @@ Be careful you have enough space in `/tmp/` because you might run out of disk sp
 
 Now run those commands to reproduce the results.
 
-```
+```bash
 git clone git@github.com:philipperemy/speaker-change-detection.git
 cd speaker-change-detection
 virtualenv -p python3.6 venv # probably will work on every python3 impl.
@@ -56,7 +56,7 @@ export PYTHONPATH=..:$PYTHONPATH; python 3_train_distance_classifier.py
 
 To regenerate only the VCTK cache, run:
 
-```
+```bash
 cd audio/
 export PYTHONPATH=..:$PYTHONPATH; python generate_all_cache.py
 ```
